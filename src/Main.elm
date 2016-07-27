@@ -19,6 +19,8 @@ main =
     , subscriptions = subscriptions
   }
 
+tickResolution = 0.01
+tickInterval = Time.millisecond
 
 type alias Model =
   { msg : String
@@ -34,7 +36,7 @@ type Msg =
 
 init : (Model, Cmd Msg)
 init =
-    Model "ok" 0 0 0 ! []
+    Model "" 0 0 0 ! []
 
 
 view : Model -> Html Msg
@@ -58,7 +60,7 @@ view model =
       [ Html.text "ypos"
       , input [ Attributes.type' "range", Attributes.name "ypos", Attributes.max "100", Attributes.min "-100", onInput UpdateYPos ] [] ]
     , br [] []
-    , input [ placeholder "something", onInput UpdateMessage ] []
+    , input [ placeholder "type here", onInput UpdateMessage ] []
     , span [] [ Html.text model.msg ]
     ]
 
@@ -67,7 +69,7 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Tick time ->
-      { model | time = model.time + 0.01 } ! []
+      { model | time = model.time + tickResolution } ! []
     UpdateMessage str ->
       { model | msg = str } ! []
     UpdateXPos pos ->
@@ -86,4 +88,4 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Time.every Time.millisecond Tick
+  Time.every tickInterval Tick
